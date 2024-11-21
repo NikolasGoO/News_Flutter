@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import '../models/article.dart';
 import '../services/news_service.dart';
@@ -12,35 +14,26 @@ class _NewsHomeScreenState extends State<NewsHomeScreen> {
   final NewsService _newsService = NewsService();
   final TextEditingController _searchController = TextEditingController();
   List<Article> _articles = [];
-  String _query = '';  // O termo de pesquisa
+  String _query = ''; // Termo de pesquisa
   bool _isLoading = false;
-  int _currentPage = 1;
+  bool _isSearching = false; // Define se o campo de busca está ativo
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _fetchNews();
-    _scrollController.addListener(_onScroll);
+    _fetchNews(); // Carrega as notícias iniciais
   }
 
-  Future<void> _fetchNews({bool isLoadMore = false}) async {
+  Future<void> _fetchNews() async {
     if (_isLoading) return;
 
     setState(() => _isLoading = true);
 
     try {
-      final fetchedArticles = await _newsService.fetchNews(
-        query: _query, // Passando o termo de pesquisa
-        page: _currentPage,
-      );
-
+      final fetchedArticles = await _newsService.fetchNews(query: _query);
       setState(() {
-        if (isLoadMore) {
-          _articles.addAll(fetchedArticles);
-        } else {
-          _articles = fetchedArticles;
-        }
+        _articles = fetchedArticles;
       });
     } catch (e) {
       print('Erro ao buscar notícias: $e');
@@ -49,42 +42,62 @@ class _NewsHomeScreenState extends State<NewsHomeScreen> {
     }
   }
 
-  void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
-      _currentPage++;
-      _fetchNews(isLoadMore: true);
-    }
-  }
-
   void _onSearch(String query) {
     setState(() {
       _query = query;
-      _currentPage = 1;
       _articles = [];
     });
     _fetchNews();
+  }
+
+  void _toggleSearch() {
+    setState(() {
+      _isSearching = !_isSearching;
+      if (!_isSearching) {
+        _query = '';
+        _searchController.clear();
+        _fetchNews();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
+        title: _isSearching
+            ? TextField(
           controller: _searchController,
           decoration: const InputDecoration(
             hintText: 'Pesquise por notícias...',
           ),
           onSubmitted: _onSearch,
-        ),
+        )
+            : const Text('Notícias'),
+        actions: [
+          IconButton(
+            icon: Icon(_isSearching ? Icons.close : Icons.search),
+            onPressed: _toggleSearch,
+          ),
+        ],
       ),
-      body: _articles.isEmpty && !_isLoading
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _articles.isEmpty
           ? const Center(child: Text('Nenhuma notícia encontrada.'))
           : ListView.builder(
-        controller: _scrollController,
         itemCount: _articles.length,
         itemBuilder: (context, index) {
           final article = _articles[index];
           return ListTile(
+            leading: article.imageUrl != null
+                ? Image.network(
+              article.imageUrl!,
+              width: 100,
+              height: 100,
+              fit: BoxFit.cover,
+            )
+                : const SizedBox(width: 100, height: 100, child: Icon(Icons.image)),
             title: Text(article.title),
             subtitle: Text(article.description),
             onTap: () => Navigator.push(
