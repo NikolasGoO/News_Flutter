@@ -3,63 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>News App</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f9;
-      color: #333;
-    }
-    header {
-      background: #0073e6;
-      color: white;
-      padding: 10px 20px;
-      text-align: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.5em;
-    }
-    .container {
-      max-width: 800px;
-      margin: 20px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    h2 {
-      color: #0073e6;
-    }
-    ul {
-      list-style-type: disc;
-      margin: 0;
-      padding: 0 20px;
-    }
-    a {
-      color: #0073e6;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .button {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 15px;
-      background: #0073e6;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-    }
-    .button:hover {
-      background: #005bb5;
-    }
-  </style>
 </head>
 <body>
   <header>
@@ -91,9 +34,9 @@
       <h2>🚀 Instalação</h2>
       <ol>
         <li>Clone este repositório:</li>
-        <pre><code>git clone https://github.com/seu-usuario/news-app.git</code></pre>
+        <pre><code>git clone https://github.com/NikolasGoO/News_Flutter.git</code></pre>
         <li>Navegue até o diretório do projeto:</li>
-        <pre><code>cd news-app</code></pre>
+        <pre><code>cd News_Flutter</code></pre>
         <li>Adicione sua API Key no arquivo <code>news_service.dart</code>.</li>
         <li>Execute o comando para instalar as dependências:</li>
         <pre><code>flutter pub get</code></pre>
